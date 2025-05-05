@@ -8,7 +8,7 @@ pub trait Layout {
     fn composite(&self, size: Size) -> Vec<ComposedElement<Self::Surface>>;
 }
 
-pub struct PlacedLayout<S> {
+pub struct PlacedLayout<T> {
     pub(crate) rect: Rect,
-    pub(crate) children: Vec<PlacedElement<S>>,
+    pub(crate) children: Vec<PlacedElement<T>>,
 }

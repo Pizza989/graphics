@@ -5,7 +5,10 @@ edition = "2024"
 
 [dependencies]
 euclid = "0.22.11"
+futures-intrusive = "0.5.0"
+image = "0.25.6"
 nonempty = "0.11.0"
 pollster = "0.4.0"
-wgpu = "25.0.0"
+shaderc = "0.9.1"
+wgpu = { version = "25.0.0", features = ["spirv"] }
 winit = "0.30.9"
