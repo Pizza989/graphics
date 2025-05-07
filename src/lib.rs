@@ -2,9 +2,9 @@ use wgpu::{Instance, InstanceDescriptor, util::RenderEncoder};
 
 use crate::infrastructure::element_tree::ElementTree;
 
-mod geometry;
-mod infrastructure;
-mod renderer;
+pub mod geometry;
+pub mod infrastructure;
+pub mod renderer;
 
 trait UserInterface<'a, S> {
     fn tree() -> &'a ElementTree<S>;

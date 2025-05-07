@@ -6,19 +6,19 @@ use std::any::Any;
 use std::rc::Rc;
 
 pub enum Element<T> {
-    Widget(Rc<dyn Widget<Geometry = dyn Any, Texture = T>>),
-    Layout(Rc<dyn Layout<Surface = T>>),
+    Widget(Rc<dyn Widget<Texture = T>>),
+    Layout(Rc<dyn Layout<Texture = T>>),
 }
 
 pub enum ComposedElement<T> {
-    Widget(PlacedWidget<dyn Any, T>),
+    Widget(PlacedWidget<T>),
     Layout {
-        layout: Rc<dyn Layout<Surface = T>>,
+        layout: Rc<dyn Layout<Texture = T>>,
         rect: Rect,
     },
 }
 
 pub enum PlacedElement<T> {
-    Widget(PlacedWidget<dyn Any, T>),
+    Widget(PlacedWidget<T>),
     Layout(PlacedLayout<T>),
 }

@@ -9,7 +9,7 @@ use super::{
 };
 
 pub struct ElementTree<T> {
-    pub root: Rc<dyn Layout<Surface = T>>,
+    pub root: Rc<dyn Layout<Texture = T>>,
     pub placed_tree: Option<PlacedElementTree<T>>,
 }
 
@@ -24,6 +24,12 @@ impl<T> PlacedElementTree<T> {
 }
 
 impl<T> ElementTree<T> {
+    pub fn new(root: Rc<dyn Layout<Texture = T>>) -> Self {
+        Self {
+            root,
+            placed_tree: None,
+        }
+    }
     pub fn composite(&mut self, size: Size) {
         let rect = Rect::new(Point::new(0, 0), size);
 

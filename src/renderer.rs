@@ -1,18 +1,15 @@
-use std::any::Any;
-
 use wgpu::Origin3d;
 
-use crate::{
-    geometry::Size,
-    infrastructure::{
-        element::PlacedElement,
-        element_tree::{ElementTree, PlacedElementTree},
-        widget::PlacedWidget,
-    },
+use crate::infrastructure::{
+    element::PlacedElement, element_tree::PlacedElementTree, widget::PlacedWidget,
 };
 
 impl PlacedElementTree<wgpu::Texture> {
-    pub fn render(&self, device: &wgpu::Device, encoder: &mut wgpu::CommandEncoder) {
+    pub fn render(
+        &self,
+        device: &wgpu::Device,
+        encoder: &mut wgpu::CommandEncoder,
+    ) -> wgpu::Texture {
         let destination = device.create_texture(&wgpu::TextureDescriptor {
             label: Some("Render Destination"),
             size: wgpu::Extent3d {
@@ -24,14 +21,17 @@ impl PlacedElementTree<wgpu::Texture> {
             sample_count: 1,
             dimension: wgpu::TextureDimension::D2,
             format: wgpu::TextureFormat::Rgba8UnormSrgb,
-            usage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::RENDER_ATTACHMENT,
+            usage: wgpu::TextureUsages::COPY_SRC
+                | wgpu::TextureUsages::COPY_DST
+                | wgpu::TextureUsages::RENDER_ATTACHMENT,
             view_formats: &[wgpu::TextureFormat::Rgba8UnormSrgb],
         });
 
         self.root
             .children
             .iter()
-            .map(|element| PlacedElementTree::traverse(element, encoder, &destination));
+            .for_each(|element| PlacedElementTree::traverse(element, encoder, &destination));
+        destination
     }
 
     fn traverse(
@@ -46,8 +46,7 @@ impl PlacedElementTree<wgpu::Texture> {
             PlacedElement::Layout(placed_layout) => placed_layout
                 .children
                 .iter()
-                .map(|element| PlacedElementTree::traverse(element, encoder, destination))
-                .collect(),
+                .for_each(|element| PlacedElementTree::traverse(element, encoder, destination)),
         };
     }
 
@@ -55,7 +54,7 @@ impl PlacedElementTree<wgpu::Texture> {
     // When the PlacedWidget's rect's size exceeds the associated texture for the source
     fn copy(
         encoder: &mut wgpu::CommandEncoder,
-        source: &PlacedWidget<dyn Any, wgpu::Texture>,
+        source: &PlacedWidget<wgpu::Texture>,
         destination: &wgpu::Texture,
     ) {
         encoder.copy_texture_to_texture(
