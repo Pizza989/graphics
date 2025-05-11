@@ -3,27 +3,27 @@ use std::rc::Rc;
 use crate::geometry::{Point, Rect, Size};
 
 use super::{
-    element::{ComposedElement, PlacedElement},
-    layout::{Layout, PlacedLayout},
-    widget::PlacedWidget,
+    layout::{AbsoluteLayout, Layout},
+    ui_node::{AbsoluteUiNode, LocallyAbsoluteUiNode},
+    widget::AbsoluteWidget,
 };
 
-pub struct ElementTree<T> {
+pub struct UiTree<T> {
     pub root: Rc<dyn Layout<Texture = T>>,
-    pub placed_tree: Option<PlacedElementTree<T>>,
+    pub placed_tree: Option<AbsoluteUiTree<T>>,
 }
 
-pub struct PlacedElementTree<T> {
-    pub root: PlacedLayout<T>,
+pub struct AbsoluteUiTree<T> {
+    pub root: AbsoluteLayout<T>,
 }
 
-impl<T> PlacedElementTree<T> {
-    pub fn new(root: PlacedLayout<T>) -> Self {
+impl<T> AbsoluteUiTree<T> {
+    pub fn new(root: AbsoluteLayout<T>) -> Self {
         Self { root }
     }
 }
 
-impl<T> ElementTree<T> {
+impl<T> UiTree<T> {
     pub fn new(root: Rc<dyn Layout<Texture = T>>) -> Self {
         Self {
             root,
@@ -33,7 +33,7 @@ impl<T> ElementTree<T> {
     pub fn composite(&mut self, size: Size) {
         let rect = Rect::new(Point::new(0, 0), size);
 
-        let placed_layout = PlacedLayout {
+        let placed_layout = AbsoluteLayout {
             rect,
             children: self
                 .root
@@ -45,26 +45,26 @@ impl<T> ElementTree<T> {
 
         match &mut self.placed_tree {
             Some(tree) => tree.root = placed_layout,
-            None => self.placed_tree = Some(PlacedElementTree::new(placed_layout)),
+            None => self.placed_tree = Some(AbsoluteUiTree::new(placed_layout)),
         }
     }
 
-    fn place_element(element: &ComposedElement<T>, origin: Point) -> PlacedElement<T> {
+    fn place_element(element: &LocallyAbsoluteUiNode<T>, origin: Point) -> AbsoluteUiNode<T> {
         match element {
-            ComposedElement::Widget(relatively_placed_widget) => {
-                PlacedElement::Widget(PlacedWidget {
+            LocallyAbsoluteUiNode::Widget(relatively_placed_widget) => {
+                AbsoluteUiNode::Widget(AbsoluteWidget {
                     widget: relatively_placed_widget.widget.clone(),
                     rect: relatively_placed_widget.rect.translate(origin.to_vector()),
                 })
             }
-            ComposedElement::Layout { layout, rect } => {
+            LocallyAbsoluteUiNode::Layout { layout, rect } => {
                 let placed_children = layout
                     .composite(rect.size)
                     .iter()
                     .map(|element| Self::place_element(element, rect.origin))
                     .collect();
 
-                PlacedElement::Layout(PlacedLayout {
+                AbsoluteUiNode::Layout(AbsoluteLayout {
                     rect: rect.translate(origin.to_vector()),
                     children: placed_children,
                 })

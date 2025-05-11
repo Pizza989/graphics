@@ -1,9 +1,10 @@
 use wgpu::{Instance, InstanceDescriptor, util::RenderEncoder};
 
-use crate::infrastructure::element_tree::ElementTree;
+use crate::core::element_tree::ElementTree;
 
+pub mod application;
+pub mod core;
 pub mod geometry;
-pub mod infrastructure;
 pub mod renderer;
 
 trait UserInterface<'a, S> {

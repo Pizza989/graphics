@@ -10,7 +10,7 @@ pub trait Widget {
     fn render(&self, size: (i32, i32));
 }
 
-pub struct PlacedWidget<T> {
+pub struct AbsoluteWidget<T> {
     pub(crate) widget: Rc<dyn Widget<Texture = T>>,
     pub(crate) rect: Rect,
 }

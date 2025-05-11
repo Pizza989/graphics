@@ -1,12 +1,12 @@
 use std::{path::Path, rc::Rc};
 
 use graphics::{
-    geometry::Size,
-    infrastructure::{
-        element::{ComposedElement, Element},
+    core::{
+        element::{ComposedUiNode, UiNode},
         element_tree::ElementTree,
         layout::Layout,
     },
+    geometry::Size,
 };
 
 use wgpu::*;
@@ -80,17 +80,17 @@ pub async fn save_texture_to_png(
 }
 
 struct BasicLayout {
-    children: Vec<Element<wgpu::Texture>>,
+    children: Vec<UiNode<wgpu::Texture>>,
 }
 
 impl Layout for BasicLayout {
     type Texture = wgpu::Texture;
 
-    fn children(&self) -> &Vec<Element<Self::Texture>> {
+    fn children(&self) -> &Vec<UiNode<Self::Texture>> {
         &self.children
     }
 
-    fn composite(&self, size: Size) -> Vec<ComposedElement<Self::Texture>> {
+    fn composite(&self, size: Size) -> Vec<ComposedUiNode<Self::Texture>> {
         vec![]
     }
 }

@@ -1,10 +1,8 @@
 use wgpu::Origin3d;
 
-use crate::infrastructure::{
-    element::PlacedElement, element_tree::PlacedElementTree, widget::PlacedWidget,
-};
+use crate::core::{ui_node::AbsoluteUiNode, ui_tree::AbsoluteUiTree, widget::AbsoluteWidget};
 
-impl PlacedElementTree<wgpu::Texture> {
+impl AbsoluteUiTree<wgpu::Texture> {
     pub fn render(
         &self,
         device: &wgpu::Device,
@@ -30,23 +28,23 @@ impl PlacedElementTree<wgpu::Texture> {
         self.root
             .children
             .iter()
-            .for_each(|element| PlacedElementTree::traverse(element, encoder, &destination));
+            .for_each(|element| Self::traverse(element, encoder, &destination));
         destination
     }
 
     fn traverse(
-        element: &PlacedElement<wgpu::Texture>,
+        element: &AbsoluteUiNode<wgpu::Texture>,
         encoder: &mut wgpu::CommandEncoder,
         destination: &wgpu::Texture,
     ) {
         match element {
-            PlacedElement::Widget(placed_widget) => {
-                PlacedElementTree::copy(encoder, placed_widget, destination)
+            AbsoluteUiNode::Widget(placed_widget) => {
+                Self::copy(encoder, placed_widget, destination)
             }
-            PlacedElement::Layout(placed_layout) => placed_layout
+            AbsoluteUiNode::Layout(placed_layout) => placed_layout
                 .children
                 .iter()
-                .for_each(|element| PlacedElementTree::traverse(element, encoder, destination)),
+                .for_each(|element| Self::traverse(element, encoder, destination)),
         };
     }
 
@@ -54,7 +52,7 @@ impl PlacedElementTree<wgpu::Texture> {
     // When the PlacedWidget's rect's size exceeds the associated texture for the source
     fn copy(
         encoder: &mut wgpu::CommandEncoder,
-        source: &PlacedWidget<wgpu::Texture>,
+        source: &AbsoluteWidget<wgpu::Texture>,
         destination: &wgpu::Texture,
     ) {
         encoder.copy_texture_to_texture(
