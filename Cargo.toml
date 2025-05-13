@@ -8,8 +8,10 @@ calloop = "0.14.2"
 euclid = "0.22.11"
 futures-intrusive = "0.5.0"
 image = "0.25.6"
+indexmap = "2.9.0"
 nonempty = "0.11.0"
 pollster = "0.4.0"
 shaderc = "0.9.1"
 smithay = { version = "0.6.0", features = ["input"] }
+uuid = { version = "1.16.0", features = ["v4"] }
 wgpu = { version = "25.0.0", features = ["spirv"] }

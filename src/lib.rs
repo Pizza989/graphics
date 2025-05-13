@@ -1,6 +1,6 @@
 use wgpu::{Instance, InstanceDescriptor, util::RenderEncoder};
 
-use crate::core::element_tree::ElementTree;
+use crate::core::ui_tree::UiTree;
 
 pub mod application;
 pub mod core;
@@ -8,7 +8,7 @@ pub mod geometry;
 pub mod renderer;
 
 trait UserInterface<'a, S> {
-    fn tree() -> &'a ElementTree<S>;
+    fn tree() -> &'a UiTree<S>;
     fn new() -> Self;
     fn dispatch_event();
 }

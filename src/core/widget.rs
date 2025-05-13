@@ -1,16 +1,12 @@
 use std::{any::Any, rc::Rc};
+use uuid::Uuid;
 
-use crate::geometry::Rect;
-
+/// Widgets are renderable Entities that can be referenced by id
 pub trait Widget {
     type Texture;
 
     fn geometry(&self) -> &dyn Any;
     fn texture(&self) -> &Self::Texture;
     fn render(&self, size: (i32, i32));
-}
-
-pub struct AbsoluteWidget<T> {
-    pub(crate) widget: Rc<dyn Widget<Texture = T>>,
-    pub(crate) rect: Rect,
+    fn id(&self) -> Uuid;
 }
