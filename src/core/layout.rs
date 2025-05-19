@@ -1,12 +1,20 @@
-use crate::core::ui_node::UiNode;
+use crate::core::ui_node::UiNodeMut;
 use crate::geometry::{Rect, Size};
 use indexmap::IndexMap;
 use uuid::Uuid;
 
-pub trait Layout {
-    type Texture;
+use super::ui_node::NodeId;
+use super::ui_tree::GetNodeError;
 
-    fn children(&self) -> &Vec<UiNode<Self::Texture>>;
+pub trait Layout {
+    type Texture: std::clone::Clone;
+
+    fn children(&self) -> &Vec<UiNodeMut<Self::Texture>>;
     fn composite(&self, size: Size) -> IndexMap<Uuid, Rect>;
-    fn id(&self) -> Uuid;
+    fn add_child(&mut self, node: UiNodeMut<Self::Texture>);
+    fn replace_child(
+        &mut self,
+        id: NodeId,
+        node: UiNodeMut<Self::Texture>,
+    ) -> Result<(), GetNodeError>;
 }

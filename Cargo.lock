@@ -868,6 +868,7 @@ dependencies = [
  "pollster",
  "shaderc",
  "smithay",
+ "thiserror 2.0.12",
  "uuid",
  "wgpu",
 ]

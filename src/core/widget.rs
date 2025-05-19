@@ -8,5 +8,4 @@ pub trait Widget {
     fn geometry(&self) -> &dyn Any;
     fn texture(&self) -> &Self::Texture;
     fn render(&self, size: (i32, i32));
-    fn id(&self) -> Uuid;
 }
